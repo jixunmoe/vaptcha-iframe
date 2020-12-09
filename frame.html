@@ -57,13 +57,13 @@
                 source.postMessage({
                   vaptcha: id,
                   token: vaptchaObj.getToken(),
-                });
+                }, origin);
               });
               vaptchaObj.listen('close', () => {
                 source.postMessage({
                   vaptcha: id,
                   token: '',
-                });
+                }, origin);
               })
               vaptchaObj.render();
               setTimeout(() => {

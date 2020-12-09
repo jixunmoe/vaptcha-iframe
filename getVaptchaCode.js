@@ -6,6 +6,7 @@
 
 function getVaptchaCode(frameURL, container) {
     return new Promise((resolve) => {
+        const {origin} = new URL(frameURL);
         const id = 'id' + Date.now() + Math.random();
         const frame = document.createElement('iframe');
         frame.style.transition = 'opacity 1s 1s';
@@ -30,7 +31,8 @@ function getVaptchaCode(frameURL, container) {
 
         frame.src = frameURL;
         frame.onload = () => {
-            frame.contentWindow.postMessage({ vaptcha: 'init', id });
+            console.info('load');
+            frame.contentWindow.postMessage({ vaptcha: 'init', id }, origin);
         };
         container.appendChild(frame);
     });
