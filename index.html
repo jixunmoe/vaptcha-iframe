@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vaptcha 验证 demo</title>
+    <style>
+        iframe{
+            border: 1px solid #777;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        pre {
+            max-width: 40em;
+        }
+        section {
+            display: inline-block;
+            min-width: 10em;
+            min-height: 10em;
+            padding: 1em;
+            border: 1px solid #777;
+            margin-top: 1em;
+        }
+
+        .v-container iframe {
+            width: 400px;
+            height: 270px;
+        }
+    </style>
+</head>
+<body>
+    <section id="form1">
+        <button type="button" id="btn1">提交表单 1</button>
+        <input type="text" id="code1" />
+        <div id="v1" class="v-container"></div>
+    </section>
+    <br>
+    <section id="form2">
+        <button type="button" id="btn2">提交表单 2</button>
+        <input type="text" id="code2" />
+        <div id="v2" class="v-container"></div>
+    </section>
+
+    <script src="./getVaptchaCode.js" defer></script>
+    <script>
+        // iframe 地址
+        // 需要部署到你自己的域名下，或在 Vaptcha 后台验证使用 GitHub 的域名，github.io。
+        // location.origin 是当前页面的来源，前端动态获取或写死；
+        // 5b4d9c76a485e504101923df 替换为你的验证单元 ID(VID)。
+        const frameURL = 'https://jixunmoe.github.io/vaptcha-iframe/frame.html#' + location.origin + '|5b4d9c76a485e504101923df';
+        const result = document.getElementById('text');
+        document.getElementById('btn1').onclick = async () => {
+            const token = await getVaptchaCode(frameURL, document.getElementById('v1'));
+            // TODO: 提交数据
+            document.getElementById('code1').value = token;
+        };
+
+        document.getElementById('btn2').onclick = async () => {
+            const token = await getVaptchaCode(frameURL, document.getElementById('v2'));
+            // TODO: 提交数据
+            document.getElementById('code2').value = token;
+        };
+    </script>
+</body>
+</html>

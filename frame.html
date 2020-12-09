@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vaptcha 子框架</title>
+</head>
+
+<body>
+  <style>
+    body {
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    main > button {
+      margin-top: 1em;
+    }
+  </style>
+  <main>
+    <div id="vaptchaContainer">载入中…</div>
+  </main>
+  <script src="https://v.vaptcha.com/v3.js"></script>
+  <script>
+    (() => {
+      const [origin, vID] = location.hash.slice(1).split('|');
+      let id;
+      let source;
+      let vaptchaObj;
+
+      // 文档载入时监听 message 事件
+      window.addEventListener("message", (event) => {
+        if (event.origin !== origin) return;
+        if (!event.data) return;
+
+        if (event.data.vaptcha === 'init') {
+            source = event.source;
+            id = event.data.id;
+            
+            vaptcha({
+              //配置参数
+              vid: vID, // 验证单元id
+              type: 'click',
+              container: '#vaptchaContainer',
+            }).then(function (result) {
+              vaptchaObj = result;
+              vaptchaObj.listen("pass", () => {
+                source.postMessage({
+                  vaptcha: id,
+                  token: vaptchaObj.getToken(),
+                });
+              });
+              vaptchaObj.listen('close', () => {
+                source.postMessage({
+                  vaptcha: id,
+                  token: '',
+                });
+              })
+              vaptchaObj.render();
+              setTimeout(() => {
+                document.querySelector('.vp-basic-btn').click();
+              }, 500);
+            });
+        }
+      }, false);
+    })();
+  </script>
+</body>
+
+</html>
