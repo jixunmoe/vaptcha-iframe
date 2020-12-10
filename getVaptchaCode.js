@@ -31,7 +31,6 @@ function getVaptchaCode(frameURL, container) {
 
         frame.src = frameURL;
         frame.onload = () => {
-            console.info('load');
             frame.contentWindow.postMessage({ vaptcha: 'init', id }, origin);
         };
         container.appendChild(frame);
